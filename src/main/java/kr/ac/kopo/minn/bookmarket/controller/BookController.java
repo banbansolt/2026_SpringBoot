@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/books") // 클래스 전체의 기본 주소를 /books로 설정 (권장)
@@ -41,6 +43,13 @@ public class BookController {
         return "books";
     }
 
+//    localhost:8080/BookMarket/books/filter/bookFilter;publisher=길벗캠퍼스;category=IT전문서,IT교육교재
+    @GetMapping("/filter/{bookFilter}")
+    public String requestBooksByFilter(@MatrixVariable(pathVar = "bookFilter") Map<String, List<String>> bookFilter, Model model){
+        Set<Book> bookByFilter = bookService.getBookListByFilter(bookFilter);
+        model.addAttribute("bookList",bookByFilter);
+        return "books";
+    }
 
     // 접속 주소: http://localhost:8080/books/all
     @GetMapping("/all")
