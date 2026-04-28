@@ -14,14 +14,8 @@
     <div class="container py-4">
         <header class="pb-3 mb-4 border-bottom">
             <a href="/BookMarket/home" class="d-flex align-items-center text-body-emphasis text-decoration-none">
-                <div class="container py-4">
-                    <header class="pb-3 mb-4 border-bottom">
-                        <a href="/BookMarket/home" class="d-flex align-items-center text-body-emphasis text-decoration-none">
-                            <img src="imgs/book_icon.png">
-                            <span class="fs-4">BookMarket</span>
-                        </a>
-                    </header>
-                </div>
+                <img src="/BookMarket/imgs/book_icon.png">&nbsp;&nbsp;
+                <span class="fs-4">BookMarket</span>
             </a>
         </header>
 
@@ -33,12 +27,12 @@
         </div>
 
         <div class="row align-items-md-stretch">
-<!--            <div class="col-md-4">-->
-<!--                <img th:src="'/BookMarket/images/'+${book.getFileName()}" style="width: 90%">-->
-<!--                <div class="text-center">-->
-<!--                    <a style="text-decoration-line: none" th:href="@{download(file=${book.getFileName()})}">이미지다운로드</a>-->
-<!--                </div>-->
-<!--            </div>-->
+            <!--            <div class="col-md-4">-->
+            <!--                <img th:src="'/BookMarket/images/'+${book.getFileName()}" style="width: 90%">-->
+            <!--                <div class="text-center">-->
+            <!--                    <a style="text-decoration-line: none" th:href="@{download(file=${book.getFileName()})}">이미지다운로드</a>-->
+            <!--                </div>-->
+            <!--            </div>-->
             <div class="col-md-8">
                 <h3 th:text="${book.getName()}"></h3>
                 <p th:text="${book.getDescription()}"></p>

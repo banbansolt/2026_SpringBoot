@@ -21,17 +21,14 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public Book getBookById(String bookId){
-
+    public Book getBookById(String bookId) {
         Book book = bookRepository.getBookById(bookId);
-
         return book;
     }
 
     @Override
     public List<Book> getBookListByCategory(String category) {
         List<Book> booksByCategory = bookRepository.getBookListByCategory(category);
-
         return booksByCategory;
     }
 
@@ -40,4 +37,11 @@ public class BookServiceImpl implements BookService{
         Set<Book> booksByFilter = bookRepository.getBookListByFilter(filter);
         return booksByFilter;
     }
+
+    @Override
+    public void setNewBook(Book book) {
+        bookRepository.setNewBook(book);
+    }
+
+
 }

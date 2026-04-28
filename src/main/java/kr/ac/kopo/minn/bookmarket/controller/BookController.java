@@ -50,6 +50,23 @@ public class BookController {
         model.addAttribute("bookList",bookByFilter);
         return "books";
     }
+    @GetMapping("/add")
+    public String requestAddBookForm() {
+        return "addBook";
+    }
+
+    @PostMapping("/add")
+    public String submitAddNewBook(@ModelAttribute Book book) {
+        bookService.setNewBook(book);
+        return "books";
+    }
+
+    @ModelAttribute
+    public void addAttributes(Model model) {
+        model.addAttribute("addTitle", "신규 도서 등록");
+    }
+
+
 
     // 접속 주소: http://localhost:8080/books/all
     @GetMapping("/all")
