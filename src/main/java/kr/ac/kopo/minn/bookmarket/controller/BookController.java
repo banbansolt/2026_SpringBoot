@@ -3,32 +3,37 @@ package kr.ac.kopo.minn.bookmarket.controller;
 
 import kr.ac.kopo.minn.bookmarket.domain.Book;
 import kr.ac.kopo.minn.bookmarket.service.BookService;
+import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @Controller
-@RequestMapping("/books") // 클래스 전체의 기본 주소를 /books로 설정 (권장)
+@RequestMapping("/books")
 public class BookController {
-
     @Autowired
     private BookService bookService;
 
-    // 접속 주소: http://localhost:8080/books
-    @GetMapping // 클래스 수준의 /books 주소를 그대로 사용
+    @Value("${file.uploadDir}")
+    String fileDir;
+
+    @RequestMapping(method = RequestMethod.GET)
     public String requestBookList(Model model){
         List<Book> listOfBooks = bookService.getAllBookList();
         model.addAttribute("bookList", listOfBooks);
         return "books";
     }
 
-    // 접속 주소: http://localhost:8080/books/book?id=isbn1001
     @GetMapping("/book")
     public String requestBookById(@RequestParam("id") String bookId, Model model){
         Book book = bookService.getBookById(bookId);
@@ -37,38 +42,49 @@ public class BookController {
     }
 
     @GetMapping("/{category}")
-    public String requestBooksByCategory(@PathVariable("category") String bookCategory, Model model) {
+    public String requestBooksByCategory(@PathVariable("category") String bookCategory, Model model){
         List<Book> booksByCategory = bookService.getBookListByCategory(bookCategory);
         model.addAttribute("bookList", booksByCategory);
         return "books";
     }
 
-//    localhost:8080/BookMarket/books/filter/bookFilter;publisher=길벗캠퍼스;category=IT전문서,IT교육교재
     @GetMapping("/filter/{bookFilter}")
     public String requestBooksByFilter(@MatrixVariable(pathVar = "bookFilter") Map<String, List<String>> bookFilter, Model model){
-        Set<Book> bookByFilter = bookService.getBookListByFilter(bookFilter);
-        model.addAttribute("bookList",bookByFilter);
+        Set<Book> booksByFilter = bookService.getBookListByFilter(bookFilter);
+        model.addAttribute("bookList", booksByFilter);
         return "books";
     }
+
     @GetMapping("/add")
-    public String requestAddBookForm() {
+    public String requestAddBookForm(){
         return "addBook";
     }
 
     @PostMapping("/add")
-    public String submitAddNewBook(@ModelAttribute Book book) {
+    public String submitAddNewBook(@ModelAttribute Book book){
+        MultipartFile bookImage = book.getBookImage();
+        System.out.println("파일사이즈" + bookImage.getSize());
+        String saveName = bookImage.getOriginalFilename();
+        File saveFile = new File(fileDir, saveName);
+        if (bookImage != null && !bookImage.isEmpty()){
+            try {
+                bookImage.transferTo(saveFile);
+            } catch (IOException e) {
+                throw new RuntimeException("이미지가 업로드 되지 않았습니다.");
+            }
+        }
+        book.setFileName(saveName);
         bookService.setNewBook(book);
-        return "books";
+        return "redirect:/books";
     }
 
     @ModelAttribute
-    public void addAttributes(Model model) {
+    public void addAddtributes(Model model){
         model.addAttribute("addTitle", "신규 도서 등록");
     }
 
 
 
-    // 접속 주소: http://localhost:8080/books/all
     @GetMapping("/all")
     public ModelAndView requestAllBooks(){
         ModelAndView modelAndView = new ModelAndView();

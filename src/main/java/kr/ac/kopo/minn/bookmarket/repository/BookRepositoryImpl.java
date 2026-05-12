@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Repository
-public class BookRepositoryImpl implements BookRepository {
+public class BookRepositoryImpl implements BookRepository{
     private List<Book> listOfBooks = new ArrayList<Book>();
 
     public BookRepositoryImpl() {
@@ -21,6 +21,7 @@ public class BookRepositoryImpl implements BookRepository {
         book1.setAuthor("송미영");
         book1.setUnitPrice(new BigDecimal(35000));
         book1.setReleaseDate("2024/12/31");
+        book1.setFileName("isbn1001.jpg");
 
         Book book2 = new Book();
         book2.setBookId("isbn1002");
@@ -32,6 +33,7 @@ public class BookRepositoryImpl implements BookRepository {
         book2.setAuthor("이연희");
         book2.setUnitPrice(new BigDecimal(29000));
         book2.setReleaseDate("2022/01/15");
+        book2.setFileName("isbn1002.jpg");
 
         Book book3 = new Book();
         book3.setBookId("isbn1003");
@@ -43,6 +45,7 @@ public class BookRepositoryImpl implements BookRepository {
         book3.setAuthor("우재남");
         book3.setUnitPrice(new BigDecimal(34000));
         book3.setReleaseDate("2024/01/19");
+        book3.setFileName("isbn1003.jpg");
 
         listOfBooks.add(book1);
         listOfBooks.add(book2);
@@ -56,33 +59,32 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Book getBookById(String bookId) {
-
         Book book = null;
-
-        for (Book searchBook: listOfBooks) {
-            if (searchBook != null && searchBook.getBookId() != null && searchBook.getBookId().equals(bookId)) {
-                book = searchBook; // book을 찾았으면, 위에서 선언한 book 객체에 넣는다.
-                break; // break로 빠져나간다.
+        for (Book searchBook: listOfBooks){
+            if (searchBook != null && searchBook.getBookId() != null && searchBook.getBookId().equals(bookId)){
+                book = searchBook;
+                break;
             }
         }
-        if(book == null) {
-            throw new IllegalArgumentException("도서ID가 "+bookId+"인 도서를 찾을 수가 없습니다.");
+
+        if (book == null){
+            throw new IllegalArgumentException("도서ID가 " + bookId + "인 도서는 찾을 수가 없습니다.");
         }
+
         return book;
     }
-
 
     @Override
     public List<Book> getBookListByCategory(String category) {
         List<Book> booksByCategory = new ArrayList<Book>();
-
-        for(Book searchBook : listOfBooks) {
-            if(category.equalsIgnoreCase(searchBook.getCategory()))
+        for (Book searchBook : listOfBooks){
+            if (category.equalsIgnoreCase(searchBook.getCategory()))
                 booksByCategory.add(searchBook);
         }
 
         return booksByCategory;
     }
+
     @Override
     public Set<Book> getBookListByFilter(Map<String, List<String>> filter) {
         Set<Book> booksByCategory = new HashSet<Book>();
@@ -92,9 +94,8 @@ public class BookRepositoryImpl implements BookRepository {
         if (booksByFilter.contains("publisher")) {
             for (String publisherName : filter.get("publisher")) {
                 for (Book searchBook : listOfBooks) {
-                    if (publisherName.equalsIgnoreCase(searchBook.getPublisher())) {
+                    if (publisherName.equalsIgnoreCase(searchBook.getPublisher()))
                         booksByPublisher.add(searchBook);
-                    }
                 }
             }
         }
@@ -109,8 +110,8 @@ public class BookRepositoryImpl implements BookRepository {
         booksByCategory.retainAll(booksByPublisher);
 
         return booksByCategory;
-
     }
+
     @Override
     public void setNewBook(Book book) {
         listOfBooks.add(book);
