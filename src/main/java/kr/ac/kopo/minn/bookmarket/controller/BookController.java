@@ -1,7 +1,7 @@
 package kr.ac.kopo.minn.bookmarket.controller;
 
-
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import kr.ac.kopo.minn.bookmarket.domain.Book;
 import kr.ac.kopo.minn.bookmarket.service.BookService;
 import org.apache.juli.logging.Log;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -60,12 +61,16 @@ public class BookController {
     }
 
     @GetMapping("/add")
-    public String requestAddBookForm(){
+    public String requestAddBookForm(Model model){
+        model.addAttribute("book", new Book());
         return "addBook";
     }
 
     @PostMapping("/add")
-    public String submitAddNewBook(@ModelAttribute Book book){
+    public String submitAddNewBook(@Valid @ModelAttribute Book book, BindingResult bindingResult){
+        if (bindingResult.hasErrors())
+            return "addBook";
+
         MultipartFile bookImage = book.getBookImage();
         System.out.println("파일사이즈" + bookImage.getSize());
         String saveName = bookImage.getOriginalFilename();
@@ -87,6 +92,7 @@ public class BookController {
         model.addAttribute("addTitle", "신규 도서 등록");
     }
 
+
     @GetMapping("/download")
     public void downloadBookImage(@RequestParam("file") String paramKey, HttpServletResponse response){
         File imgFile = new File(fileDir + paramKey);
@@ -104,12 +110,8 @@ public class BookController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
-
-
-
-
-
 
     @GetMapping("/all")
     public ModelAndView requestAllBooks(){
