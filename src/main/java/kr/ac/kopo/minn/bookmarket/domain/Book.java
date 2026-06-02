@@ -1,6 +1,7 @@
 package kr.ac.kopo.minn.bookmarket.domain;
 
 import jakarta.validation.constraints.*;
+import kr.ac.kopo.minn.bookmarket.validator.BookId;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
