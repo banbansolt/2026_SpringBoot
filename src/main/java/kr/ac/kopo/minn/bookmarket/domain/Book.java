@@ -11,13 +11,14 @@ import java.math.BigDecimal;
 
 @Data
 public class Book {
-    @Pattern(regexp = "isbn[1-9]+")
+    @BookId
+    @Pattern(regexp = "isbn[0-9]+", message = "{Pattern.book.bookId}")
     private String bookId;//도서 ID
-    @Size(min = 4, max = 50)
+    @Size(min = 4, max = 50, message = "{Size.book.name}")
     private String name;//도서제목
-    @Min(value = 0)
-    @Digits(integer = 8, fraction = 2)
-    @NotNull
+    @Min(value = 0, message = "{Min.book.unitPrice}")
+    @Digits(integer = 8, fraction = 2, message = "{Digits.book.unitPrice}")
+    @NotNull(message = "{NotNull.book.unitPrice}")
     private BigDecimal unitPrice;//가격
     private String author;//저자
     private String description;//설명
