@@ -1,6 +1,5 @@
 package kr.ac.kopo.minn.bookmarket.service;
 
-
 import kr.ac.kopo.minn.bookmarket.domain.Cart;
 import kr.ac.kopo.minn.bookmarket.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +18,10 @@ public class CartServiceImpl implements CartService{
     @Override
     public Cart read(String cartId) {
         return cartRepository.read(cartId);
+    }
+
+    @Override
+    public void update(String cartId, Cart cart) {
+        cartRepository.update(cartId, cart);
     }
 }
