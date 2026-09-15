@@ -1,7 +1,5 @@
 package kr.ac.kopo.minn.bookmarket.domain;
 
-
-
 import lombok.Data;
 import lombok.ToString;
 
