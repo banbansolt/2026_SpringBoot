@@ -1,5 +1,8 @@
 package kr.ac.kopo.minn.bookmarket.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import kr.ac.kopo.minn.bookmarket.domain.*;
 import kr.ac.kopo.minn.bookmarket.service.BookService;
 import kr.ac.kopo.minn.bookmarket.service.CartService;
@@ -8,9 +11,8 @@ import kr.ac.kopo.minn.bookmarket.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,62 @@ public class OrderController {
         order.setGrandTotal(cart.getGrandTotal());
 
         return "redirect:/order/orderCustomerInfo";
+    }
+
+    @GetMapping("/orderCustomerInfo")
+    public String requestCustomerInfoForm(Model model){
+        model.addAttribute("customer", order.getCustomer());
+        return "orderCustomerInfo";
+    }
+
+    @PostMapping("/orderCustomerInfo")
+    public String requestCustomerInfo(@ModelAttribute Customer customer){
+        order.setCustomer(customer);
+        return "redirect:/order/orderShippingInfo";
+    }
+
+    @GetMapping("/orderShippingInfo")
+    public String requestShippingInfoForm(Model model){
+        model.addAttribute("shipping", order.getShipping());
+        return "orderShippingInfo";
+    }
+
+    @PostMapping("/orderShippingInfo")
+    public String requestShippingInfo(@Valid @ModelAttribute Shipping shipping, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors())
+            return "orderShippingInfo";
+        order.setShipping(shipping);
+        model.addAttribute("order", order);
+        return "redirect:/order/orderConfirmation";
+    }
+
+    @GetMapping("/orderConfirmation")
+    public String requestConfirmation(Model model){
+        model.addAttribute("bookList", listOfBooks);
+        model.addAttribute("order", order);
+        return "orderConfirmation";
+    }
+
+    @GetMapping("/orderFinished")
+    public String requestOrderFinished(HttpServletRequest request, Model model){
+        orderService.saveOrder(order);
+        model.addAttribute("order", order);
+        HttpSession session = request.getSession();
+
+        if (session != null)
+            session.invalidate();
+
+        return "orderFinished";
+    }
+
+    @GetMapping("/orderCancelled")
+    public String requestCancelled(HttpServletRequest request){
+        HttpSession session = request.getSession();
+
+        if(session != null)
+            session.invalidate();
+
+        return "orderCancelled";
     }
 
 }
