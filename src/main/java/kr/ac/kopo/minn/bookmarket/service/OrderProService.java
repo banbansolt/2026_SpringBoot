@@ -4,6 +4,9 @@ import kr.ac.kopo.minn.bookmarket.domain.Order;
 import kr.ac.kopo.minn.bookmarket.repository.OrderProRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,7 +32,8 @@ public class OrderProService {
 
     //    페이지(1페이지당 5개씩) 단위로 주문 목록 전체를 보여주기 위한 기능
     public Page<Order> listAll(int pageNum, String sortField, String sortDir){
-
-        return null;
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sortDir.equals("asc")? Sort.by(sortField).ascending() : Sort.by(sortField).descending());
+        return orderProRepository.findAll(pageable);
     }
 }
