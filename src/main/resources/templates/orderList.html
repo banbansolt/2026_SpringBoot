@@ -60,24 +60,19 @@
                                 <td th:text="${order.customer.id}"></td>
                                 <td th:text="${order.shipping.address.addressName}"></td>
                                 <td th:text="${order.grandTotal}"></td>
-                                <!--    수정, 삭제 버튼 추가                                -->
-                                <td></td>
+                                <!--    상세보기, 수정, 삭제 버튼 추가                                -->
+                                <td>
+                                    <a th:href="@{'/order/view/' + ${order.orderId}}"><span class="badge text-bg-secondary">상세보기</span></a>
+                                    <a th:href="@{'/order/edit/' + ${order.orderId}}"><span class="badge text-bg-secondary">수정</span></a>
+                                    <a th:href="@{'/order/delete/' + ${order.orderId}}"><span class="badge text-bg-secondary">삭제</span></a>
+                                </td>
                             </tr>
                         </div>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td class="text-right"><h5><b>총액: </b></h5></td>
-                            <td class="text-cetner text-danger"><h4><b>[[${order.grandTotal}]]원</b></h4></td>
-                        </tr>
                     </form>
                     </tbody>
                 </table>
-            </div>
-            <div class="container col-md-5 py-3">
-                <a href="/BookMarket/order/orderShippingInfo" class="btn btn-secondary" role="button">이전</a>
-                <input type="submit" class="btn btn-seccess" value="주문완료"/>
-                <a href="/BookMarket/order/orderCancelled" class="btn btn-secondary" role="button">취소</a>
+                <div>&nbsp;</div>
+                <div><i>Sorted by [[${sortField}]] in [[${sortDir}]] order</i></div>
             </div>
         </div>
 
@@ -87,5 +82,4 @@
     </div>
 </main>
 </body>
-
 </html>

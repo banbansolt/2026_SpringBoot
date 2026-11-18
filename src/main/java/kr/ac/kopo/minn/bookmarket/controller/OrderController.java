@@ -1,6 +1,5 @@
 package kr.ac.kopo.minn.bookmarket.controller;
 
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -161,5 +160,42 @@ public class OrderController {
         modelAndView.addObject("bookList", listOfBooks);
 
         return modelAndView;
+    }
+
+    @GetMapping("/edit/{id}")
+    public ModelAndView showEditOrder(@PathVariable(value = "id") Long id){
+        Order order = orderProService.get(id);
+        List<Book> bookList = new ArrayList<Book>();
+        for (OrderItem orderItem : order.getOrderItems().values()){
+            String bookId = orderItem.getBookId();
+            Book book = bookService.getBookById(bookId);
+            bookList.add(book);
+        }
+
+        ModelAndView modelAndView = new ModelAndView("orderEdit");
+        modelAndView.addObject("order", order);
+        modelAndView.addObject("bookList", bookList);
+
+        return  modelAndView;
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteOrder(@PathVariable(value = "id") Long id){
+        orderProService.delete(id);
+        return "redirect:/order/list";
+    }
+
+    @GetMapping("/deleteAll")
+    public String deleteAllOrder(){
+        orderProService.deleteAll();
+        return "redirect:/order/list";
+    }
+
+    @PostMapping("/save")
+    public String saveProduct(@ModelAttribute Order order){
+        Order saveOrder = orderProService.get(order.getOrderId());
+        saveOrder.setShipping(order.getShipping());
+        orderProService.save(saveOrder);
+        return "redirect:/order/list";
     }
 }
